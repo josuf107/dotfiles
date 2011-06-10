@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/home/joseph07/Downloads/jsl-0.3.0/src/config'
+let g:netrw_dirhist_2='/home/joseph07/projects/yogalola/cgi-bin'
+let g:netrw_dirhist_3='/home/joseph07/projects/vm/chromiumos/depot_tools'
+let g:netrw_dirhist_4='/var/log/gdm'
+let g:netrw_dirhist_5='/home/joseph07/buildSpace/cscope/cscope-15.7a/src'
