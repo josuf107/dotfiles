@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2012  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
   endif
 
   if !exists('g:EclimJavascriptLintConf')
-    let g:EclimJavascriptLintConf = '~/.jslrc'
+    let g:EclimJavascriptLintConf = eclim#UserHome() . '/.jslrc'
   endif
 " }}}
 
@@ -64,11 +64,28 @@ function! eclim#javascript#util#Jsl()
       let g:eclim_javascript_jsl_warn = 1
     endif
   else
-    let command = 'jsl -process "' . expand('%:p') . '"'
-    let conf = expand(g:EclimJavascriptLintConf)
-    if filereadable(conf)
-      let command .= ' -conf "' . conf . '"'
+    if !exists('g:EclimJavascriptLintVersion')
+      call eclim#util#System('jsl --help')
+      let g:EclimJavascriptLintVersion = v:shell_error == 2 ? 'c' : 'python'
     endif
+
+    let conf = expand(g:EclimJavascriptLintConf)
+
+    " the c version
+    if g:EclimJavascriptLintVersion == 'c'
+      let command = 'jsl -process "' . expand('%:p') . '"'
+      if filereadable(conf)
+        let command .= ' -conf "' . conf . '"'
+      endif
+
+    " the new python version
+    else
+      let command = 'jsl "' . expand('%:p') . '"'
+      if filereadable(conf)
+        let command .= ' --conf "' . conf . '"'
+      endif
+    endif
+
     let result = eclim#util#System(command)
     if v:shell_error == 2 "|| v:shell_error == 4
       call eclim#util#EchoError('Error running command: ' . command)
@@ -97,7 +114,11 @@ function! eclim#javascript#util#Jsl()
 
     call eclim#display#signs#SetPlaceholder()
     call eclim#util#ClearLocationList('jsl')
-    call eclim#util#SetLocationList(errors, 'a')
+    if &ft == 'javascript'
+      call eclim#util#SetLocationList(errors)
+    else
+      call eclim#util#SetLocationList(errors, 'a')
+    endif
     call eclim#display#signs#RemovePlaceholder()
   else
     call eclim#util#ClearLocationList('jsl')

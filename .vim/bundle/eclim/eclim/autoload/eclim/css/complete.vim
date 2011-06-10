@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2012  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -30,8 +30,12 @@
 " CodeComplete(findstart, base) {{{
 " Handles css code completion.
 function! eclim#css#complete#CodeComplete(findstart, base)
+  if !eclim#project#util#IsCurrentFileInProject(0)
+    return a:findstart ? -1 : []
+  endif
+
   if a:findstart
-    update
+    call eclim#lang#SilentUpdate(1)
 
     " locate the start of the word
     let line = getline('.')
@@ -44,13 +48,12 @@ function! eclim#css#complete#CodeComplete(findstart, base)
 
     return start
   else
-    if !eclim#project#util#IsCurrentFileInProject()
-      return []
-    endif
-
     let offset = eclim#util#GetOffset() + len(a:base)
     let project = eclim#project#util#GetCurrentProjectName()
-    let file = eclim#project#util#GetProjectRelativeFilePath()
+    let file = eclim#lang#SilentUpdate(1, 0)
+    if file == ''
+      return []
+    endif
 
     let command = s:complete_command
     let command = substitute(command, '<project>', project, '')
@@ -59,21 +62,21 @@ function! eclim#css#complete#CodeComplete(findstart, base)
     let command = substitute(command, '<encoding>', eclim#util#GetEncoding(), '')
 
     let completions = []
-    let results = split(eclim#ExecuteEclim(command), '\n')
-    if len(results) == 1 && results[0] == '0'
+    let results = eclim#ExecuteEclim(command)
+    if type(results) != g:LIST_TYPE
       return
     endif
 
     let filter = 0
     for result in results
-      let word = substitute(result, '\(.\{-}\)|.*', '\1', '')
+      let word = result.completion
       if word =~ '^:'
         let word = strpart(word, 1)
         let filter = 1
       endif
 
-      let menu = substitute(result, '.\{-}|\(.*\)|.*', '\1', '')
-      let info = substitute(result, '.*|\(.*\)', '\1', '')
+      let menu = result.menu
+      let info = result.info
 
       let dict = {'word': tolower(word), 'menu': menu, 'info': info}
 

@@ -1,3 +1,4 @@
+g:SuperTabClosePreviewOnPopupClose	supertab.txt	/*g:SuperTabClosePreviewOnPopupClose*
 g:SuperTabCompletionContexts	supertab.txt	/*g:SuperTabCompletionContexts*
 g:SuperTabContextDefaultCompletionType	supertab.txt	/*g:SuperTabContextDefaultCompletionType*
 g:SuperTabCrMapping	supertab.txt	/*g:SuperTabCrMapping*
@@ -7,9 +8,12 @@ g:SuperTabLongestHighlight	supertab.txt	/*g:SuperTabLongestHighlight*
 g:SuperTabMappingBackward	supertab.txt	/*g:SuperTabMappingBackward*
 g:SuperTabMappingForward	supertab.txt	/*g:SuperTabMappingForward*
 g:SuperTabMappingTabLiteral	supertab.txt	/*g:SuperTabMappingTabLiteral*
-g:SuperTabMidWordCompletion	supertab.txt	/*g:SuperTabMidWordCompletion*
+g:SuperTabNoCompleteAfter	supertab.txt	/*g:SuperTabNoCompleteAfter*
+g:SuperTabNoCompleteBefore	supertab.txt	/*g:SuperTabNoCompleteBefore*
 g:SuperTabRetainCompletionDuration	supertab.txt	/*g:SuperTabRetainCompletionDuration*
 supertab	supertab.txt	/*supertab*
+supertab-closepreviewonpopupclose	supertab.txt	/*supertab-closepreviewonpopupclose*
+supertab-completionchaining	supertab.txt	/*supertab-completionchaining*
 supertab-completioncontexts	supertab.txt	/*supertab-completioncontexts*
 supertab-contextdefault	supertab.txt	/*supertab-contextdefault*
 supertab-contextdiscover	supertab.txt	/*supertab-contextdiscover*
@@ -23,7 +27,7 @@ supertab-intro	supertab.txt	/*supertab-intro*
 supertab-longestenhanced	supertab.txt	/*supertab-longestenhanced*
 supertab-longesthighlight	supertab.txt	/*supertab-longesthighlight*
 supertab-mappingtabliteral	supertab.txt	/*supertab-mappingtabliteral*
-supertab-midword	supertab.txt	/*supertab-midword*
 supertab-options	supertab.txt	/*supertab-options*
+supertab-preventcomplete	supertab.txt	/*supertab-preventcomplete*
 supertab-usage	supertab.txt	/*supertab-usage*
 supertab.txt	supertab.txt	/*supertab.txt*

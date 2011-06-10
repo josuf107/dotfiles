@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2012  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -69,8 +69,10 @@ function eclim#php#search#FindInclude()
   let project = eclim#project#util#GetCurrentProjectName()
   let command = s:buildpaths
   let command = substitute(command, '<project>', project, '')
-  let result =  eclim#ExecuteEclim(command)
-  let paths = split(result, '\n')
+  let paths =  eclim#ExecuteEclim(command)
+  if type(paths) != g:LIST_TYPE
+    return
+  endif
 
   let results = split(globpath(expand('%:h') . ',' . join(paths, ','), file), '\n')
 
@@ -84,7 +86,7 @@ function eclim#php#search#FindInclude()
         \ (bufname(entry.bufnr), g:EclimPhpSearchSingleResult)
       call eclim#display#signs#Update()
     else
-      lopen
+      exec 'lopen ' . g:EclimLocationListHeight
     endif
   else
     call eclim#util#EchoInfo("File not found.")

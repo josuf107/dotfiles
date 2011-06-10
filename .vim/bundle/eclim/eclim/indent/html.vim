@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2012  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -56,8 +56,11 @@ function! EclimGetHtmlIndent(lnum)
   call cursor(line, col)
 
   " Inside <script> tags... let javascript indent file do the work.
+  let line = getline(scriptstart)
+  let js_type = "type\\s*=\\s*['\"]\\(text\\|application\\)/\\(java\\|ecma\\)script['\"]"
   if scriptstart > 0 && scriptstart < a:lnum &&
-        \ (scriptend == 0 || (scriptend > scriptstart && a:lnum < scriptend))
+        \ (scriptend == 0 || (scriptend > scriptstart && a:lnum < scriptend)) &&
+        \ (line !~ 'type\s*=' || line =~ js_type)
     call JavascriptIndentAnythingSettings()
     if a:lnum == scriptstart + 1
       let adj = &sw
@@ -75,9 +78,9 @@ function! EclimGetHtmlIndent(lnum)
 
   " Indenting html code, do our work.
   else
-    let Settings = exists('b:indent_settings') ?
+    let l:Settings = exists('b:indent_settings') ?
       \ function(b:indent_settings) : function('HtmlIndentAnythingSettings')
-    call Settings()
+    call l:Settings()
     let adj = s:HtmlIndentAttributeWrap(a:lnum) * &sw
 
     let prevlnum = prevnonblank(a:lnum - 1)

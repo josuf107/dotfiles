@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2012  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -23,18 +23,20 @@
 " }}}
 
 " Script Varables {{{
-  let s:delim = ',,'
   let s:complete_command =
     \ '-command xml_complete -p "<project>" -f "<file>" ' .
-    \ '-o <offset> -e <encoding> -d "' .
-    \ s:delim . '"'
+    \ '-o <offset> -e <encoding>'
 " }}}
 
 " CodeComplete(findstart, base) {{{
 " Handles xml code completion.
 function! eclim#xml#complete#CodeComplete(findstart, base)
+  if !eclim#project#util#IsCurrentFileInProject(0)
+    return a:findstart ? -1 : []
+  endif
+
   if a:findstart
-    update
+    call eclim#lang#SilentUpdate(1)
 
     " locate the start of the word
     let line = getline('.')
@@ -47,13 +49,12 @@ function! eclim#xml#complete#CodeComplete(findstart, base)
 
     return start
   else
-    if !eclim#project#util#IsCurrentFileInProject()
-      return []
-    endif
-
     let offset = eclim#util#GetOffset() + len(a:base)
     let project = eclim#project#util#GetCurrentProjectName()
-    let file = eclim#project#util#GetProjectRelativeFilePath()
+    let file = eclim#lang#SilentUpdate(1, 0)
+    if file == ''
+      return []
+    endif
 
     let command = s:complete_command
     let command = substitute(command, '<project>', project, '')
@@ -62,23 +63,19 @@ function! eclim#xml#complete#CodeComplete(findstart, base)
     let command = substitute(command, '<encoding>', eclim#util#GetEncoding(), '')
 
     let completions = []
-    let results = split(eclim#ExecuteEclim(command), '\n')
-    if len(results) == 1 && results[0] == '0'
+    let results = eclim#ExecuteEclim(command)
+    if type(results) != g:LIST_TYPE
       return
     endif
 
     for result in results
-      let word = substitute(result, '\(.\{-}\)' . s:delim . '.*', '\1', '')
+      let word = result.completion
       if getline('.') =~ '\w:\w*\%' . col('.') . 'c'
         let word = substitute(word, '^\w\+:', '', '')
       endif
 
-      let menu = substitute(
-        \ result, '.\{-}' . s:delim . '\(.*\)' . s:delim . '.*', '\1', '')
-      let menu = eclim#html#util#HtmlToText(menu)
-
-      let info = substitute(result, '.*' . s:delim . '\(.*\)', '\1', '')
-      let info = eclim#html#util#HtmlToText(info)
+      let menu = eclim#html#util#HtmlToText(result.menu)
+      let info = eclim#html#util#HtmlToText(result.info)
 
       let dict = {'word': word, 'menu': menu, 'info': info}
 
