@@ -9,3 +9,4 @@ alias ls='ls --color=auto'
 export PS1='[\u@\h \W]\$ '
 export PATH=$PATH:~/bin
 export EDITOR=/usr/bin/vim
+set -o vi
