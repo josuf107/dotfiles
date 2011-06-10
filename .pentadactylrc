@@ -1,0 +1,7 @@
+noremap ; :
+noremap : ;
+noremap gl gt
+noremap gh gT
+noremap K gt
+noremap J gT
+hi -a Hint font: 14px;
