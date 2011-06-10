@@ -4,13 +4,17 @@
  
 import System.IO
 import System.Exit
+import System.Random
+import System.Directory
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
-import XMonad.Layout.Spiral
+import XMonad.Layout.Circle
 import XMonad.Layout.Tabbed
+import XMonad.Layout.Grid
+import XMonad.Layout.PerWorkspace
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 
@@ -20,7 +24,7 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "gnome-terminal"
+myTerminal      = "gnome-terminal --hide-menubar"
  
 -- Width of the window border in pixels.
 --
@@ -61,7 +65,7 @@ myNumlockMask   = mod2Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1:web","2:code","3:chat","4:media","5","6","7","8","9"]
+myWorkspaces    = ["1:web","2:shell","3:chat","4:code","5:media","6","7","8","9"]
  
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -76,11 +80,21 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- launch a terminal
     [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
-    -- launch gmrun
-    , ((modMask .|. shiftMask, xK_l     ), spawn "xscreensaver-command -lock")
+    -- lock screen
+    , ((modMask .|. shiftMask, xK_l     ), spawn "gnome-screensaver-command --lock")
+
+    , ((modMask .|. shiftMask, xK_m     ), spawn "setxkbmap us && xmodmap ~/.keymap")
+
+    , ((modMask .|. shiftMask, xK_d     ), spawn "setxkbmap dvorak && xmodmap ~/.keymap")
+
+    , ((modMask, xK_b     ), liftIO getRandomBackground >>= \bg -> spawn ("feh --bg-scale " ++ bg ))
+
+    -- play/pause rhythmbox
+    {-, ((modMask, 			   xK_apostrophe     ), spawn "rhythmbox-client --play-pause")-}
+    , ((modMask, 			   xK_apostrophe     ), spawn "cmus-remote -u")
 
     -- launch dmenu
-    , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | ~/bin/dmenu` && eval \"exec $exe\"")
+    , ((modMask,               xK_p     ), spawn "dmenu_run")
  
     -- close focused window 
 		-- Change this?
@@ -103,6 +117,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
  
     -- Move focus to the previous window
     , ((modMask,               xK_k     ), windows W.focusUp  )
+
+    -- Move focus to the previous window
+    , ((modMask .|. shiftMask, xK_Tab     ), windows W.focusUp  )
  
     -- Move focus to the master window
     , ((modMask,               xK_m     ), windows W.focusMaster  )
@@ -201,7 +218,12 @@ myTabConfig = defaultTheme {   activeBorderColor = "#7C7C7C"
                              , inactiveBorderColor = "#7C7C7C"
                              , inactiveTextColor = "#EEEEEE"
                              , inactiveColor = "#000000" }
-myLayout = avoidStruts (tiled ||| Mirror tiled ||| tabbed shrinkText myTabConfig ||| Full ||| spiral (6/7))
+
+myLayout = onWorkspace "2:shell" codeLayout $ defLayout
+
+codeLayout = smartBorders $ avoidStruts (Tall 1 (3/100) (1/2) ||| Full)
+
+defLayout = smartBorders $ avoidStruts (tiled ||| Mirror tiled ||| Grid ||| tabbed shrinkText myTabConfig ||| Full ||| Circle)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -233,9 +255,10 @@ myLayout = avoidStruts (tiled ||| Mirror tiled ||| tabbed shrinkText myTabConfig
 myManageHook = composeAll
     [ 
 		-- className =? "Gimp"           --> doFloat
-    , className =? "Google-chrome"  --> doShift "1:web"
+    className =? "Google-chrome"  --> doShift "1:web"
     , className =? "Firefox"  			--> doShift "1:web"
     , className =? "Pidgin"         --> doShift "3:chat"
+    , className =? "Rhythmbox"         --> doShift "4:media"
     , className =? "Deadbeef"      --> doShift "4:media" ]
  
 -- Whether focus follows the mouse pointer.
@@ -262,25 +285,41 @@ myFocusFollowsMouse = True
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = return ()
+myStartupHook = do
+    setWMName "LG3D" 
+    spawn "setxkbmap dvorak && xmodmap ~/.keymap"
+    bg <- liftIO getRandomBackground
+    spawn ("feh --bg-scale " ++ bg )
+    spawn "xrandr --output VGA1 --auto --left-of HDMI1"
  
+getRandomBackground :: IO FilePath
+getRandomBackground = do
+    old <- readFile "/home/jbarratt/.fehbg" >>= return . filter ('\''/=) . head . drop 2 . words
+    setCurrentDirectory "/home/jbarratt/Pictures/backgrounds"
+    bgs <- getDirectoryContents "." >>= return . filter (\v -> length v > 2)
+    (i,_) <- newStdGen >>= return . randomR (0, length bgs -1)
+    bg <- return . head . drop i $ bgs
+    new <- canonicalizePath bg
+    setCurrentDirectory "/home/jbarratt/"
+    if length bgs > 1 && new == old then getRandomBackground else return new
+
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
  
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
-	xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar"
-	xmonad $ defaults {
-		logHook            = dynamicLogWithPP $ xmobarPP {
+    xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar"
+    xmonad $ defaults {
+        logHook            = dynamicLogWithPP $ xmobarPP {
                                 ppOutput = hPutStrLn xmproc
                                 , ppTitle = xmobarColor "#FFB6B0" "" . shorten 100
                                 , ppCurrent = xmobarColor "#CEFFAC" ""
                                 , ppSep = "   "
                                 }
-		, manageHook = manageDocks <+> myManageHook
-		, startupHook = setWMName "LG3D"
-	}
+        , manageHook = manageDocks <+> myManageHook
+        , startupHook = myStartupHook
+    }
  
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will 
@@ -294,7 +333,7 @@ defaults = defaultConfig {
         focusFollowsMouse  = myFocusFollowsMouse,
         borderWidth        = myBorderWidth,
         modMask            = myModMask,
-        numlockMask        = myNumlockMask,
+        {-numlockMask        = myNumlockMask,-}
         workspaces         = myWorkspaces,
         normalBorderColor  = myNormalBorderColor,
         focusedBorderColor = myFocusedBorderColor,
@@ -304,7 +343,7 @@ defaults = defaultConfig {
         mouseBindings      = myMouseBindings,
  
       -- hooks, layouts
-        layoutHook         = smartBorders $ myLayout,
+        layoutHook         = myLayout,
         manageHook         = myManageHook,
         startupHook        = myStartupHook
     }
