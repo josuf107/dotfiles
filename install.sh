@@ -33,15 +33,3 @@ if [ ! -e ~/.bash_profile ]
 then
     ln -s $dotdir/.bash_profile ~/.bash_profile
 fi
-if [ ! -e ~/.bash_aliases ]
-then
-    ln -s $dotdir/.bash_aliases ~/.bash_aliases
-fi
-if [ ! -e ~/.muttrc ]
-then
-    ln -s $dotdir/.muttrc ~/.muttrc
-fi
-if [ ! -e ~/.mutt-colors-solarized-dark-16.muttrc ]
-then
-    ln -s $dotdir/.mutt-colors-solarized-dark-16.muttrc ~/.mutt-colors-solarized-dark-16.muttrc
-fi
