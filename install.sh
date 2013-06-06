@@ -1,7 +1,47 @@
 #!/usr/bin/bash
 dotdir=~/dotfiles
-echo ". $dotdir/.bashrc" >> ~/.bashrc
-ln -s $dotdir/.vimrc ~/.vimrc
-ln -s $dotdir/.vim ~/.vim
-ln -s $dotdir/.xmonad ~/.xmonad
-ln -s $dotdir/.pentadactylrc ~/.pentadactylrc
+. $dotdir/.bashrc
+if [ ! -e ~/.vimrc ]
+then
+    ln -s $dotdir/.vimrc ~/.vimrc
+fi
+if [ ! -e ~/.vim ]
+then
+    ln -s $dotdir/.vim ~/.vim
+fi
+if [ ! -e ~/.xmonad ]
+then
+    ln -s $dotdir/.xmonad ~/.xmonad
+fi
+if [ ! -e ~/.pentadactylrc ]
+then
+    ln -s $dotdir/.pentadactylrc ~/.pentadactylrc
+fi
+if [ ! -e ~/.caps_swap ]
+then
+    ln -s $dotdir/.caps_swap ~/.caps_swap
+fi
+if [ ! -e ~/.caps_unswap ]
+then
+    ln -s $dotdir/.caps_unswap ~/.caps_unswap
+fi
+if [ ! -e ~/.Xdefaults ]
+then
+    ln -s $dotdir/.Xdefaults ~/.Xdefaults
+fi
+if [ ! -e ~/.bash_profile ]
+then
+    ln -s $dotdir/.bash_profile ~/.bash_profile
+fi
+if [ ! -e ~/.bash_aliases ]
+then
+    ln -s $dotdir/.bash_aliases ~/.bash_aliases
+fi
+if [ ! -e ~/.muttrc ]
+then
+    ln -s $dotdir/.muttrc ~/.muttrc
+fi
+if [ ! -e ~/.mutt-colors-solarized-dark-16.muttrc ]
+then
+    ln -s $dotdir/.mutt-colors-solarized-dark-16.muttrc ~/.mutt-colors-solarized-dark-16.muttrc
+fi

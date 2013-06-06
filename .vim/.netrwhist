@@ -1,9 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/proc'
-let g:netrw_dirhist_2='/home/jbarratt/.vim/bundle/vjde/src/vjde/completion'
-let g:netrw_dirhist_3='/etc/bash_completion.d'
-let g:netrw_dirhist_4='/home/jbarratt/indeed/sample-application/.git'
-let g:netrw_dirhist_5='/home/jbarratt/indeed/rex/web/WEB-INF/spring'
-let g:netrw_dirhist_6='/home/jbarratt/.ghc'
-let g:netrw_dirhist_7='/home/jbarratt/indeed/restawk'
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/home/jbarratt/Build/eclipse/readme'
+let g:netrw_dirhist_2='/home/jbarratt/Indeed/jasx'
+let g:netrw_dirhist_3='/home/jbarratt/Indeed/local_provisioning/vagrant_vms/main/tomcat-logs/jasx-tomcat'

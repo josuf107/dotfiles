@@ -2,7 +2,6 @@ set nocompatible
 "let g:zenburn_high_Contrast=1
 "colors zenburn
 "colorscheme zenburn
-syntax on
 set display=lastline
 set number
 set tabstop=4
@@ -54,7 +53,7 @@ nnoremap		:		;
 inoremap kjh <esc>
 
 "For when tab completion gets annoying
-inoremap <C-j> <C-v><TAB>
+inoremap <C-j> <space><space><space><space>
 
 "Toggle numbering mode
 noremap	 <leader>m :call g:ToggleNuMode()<CR>
@@ -105,8 +104,9 @@ nnoremap <leader>z zfiB<CR>
 nnoremap <leader>f :e **/
 
 "Eclim basics
-autocmd Filetype java nnoremap <leader>ei :JavaImportMissing<CR>
-autocmd Filetype java nnoremap <leader>ec :JavaImportClean<CR>
+let g:EclimLogLevel=2
+let g:EclimSignLevel=2
+autocmd Filetype java nnoremap <leader>ei :JavaImport<CR>
 autocmd Filetype java nnoremap <leader>es :JavaSearch -p<Space>
 autocmd Filetype java nnoremap <leader>ed :JavaSearchContext<CR>
 autocmd Filetype java nnoremap <leader>ea :Ant -Divy_initialized=true -Dresolve_run=true<CR>
@@ -142,7 +142,7 @@ nnoremap <leader>gl :GhcModLint<CR>
 let g:user_zen_expandabbr_key = '<c-h>'
 
 ab htt http://
-ab <? <?php<CR>?><ESC>O
+"ab <? <?php<CR>?><ESC>O
 "ab { {<CR>}<UP>
 
 "Auto commands
@@ -150,8 +150,8 @@ autocmd! BufnewFile * silent! 0r ~/.vim/frames/frame.%:e
 autocmd Filetype java set smartindent
 
 "Remember code folding
-au BufWinLeave * silent! mkview 
-au BufWinEnter * silent! loadview 
+"au BufWinLeave * silent! mkview 
+"au BufWinEnter * silent! loadview 
 
 "For eclim:
 let g:EclimHtmlValidate = 0
@@ -161,6 +161,9 @@ let g:EclimXmlValidate = 0
 filetype plugin on
 call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
+syntax enable
+set background=dark
+colorscheme solarized
 "Omnicompletion
 "set omnifunc=javacomplete#Complete
 "inoremap <C-SPACE> <C-X><C-O>

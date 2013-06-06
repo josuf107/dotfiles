@@ -7,6 +7,12 @@
 
 alias ls='ls --color=auto'
 export PS1='[\u@\h \W]\$ '
-export PATH=$PATH:~/bin
-export EDITOR=/usr/bin/vim
+export PATH=$PATH:~/bin:~/.cabal/bin:~/cabal-dev/bin
+export EDITOR=vim
 set -o vi
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+shopt -s checkwinsize
