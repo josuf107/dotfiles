@@ -12,3 +12,4 @@ nnoremap		K										<C-n>
 nnoremap		z1										:zoom!<CR>
 nnoremap		z2										:zoom! 200<CR>
 
+set defsearch=duckduckgo
