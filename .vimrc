@@ -25,7 +25,8 @@ set ttyfast
 set backspace=2
 set noswapfile
 
-let mapleader = ","
+let mapleader = "-"
+let maplocalleader = ","
 
 nnoremap / /\v
 vnoremap / /\v
@@ -56,7 +57,7 @@ inoremap kjh <esc>
 inoremap <C-j> <space><space><space><space>
 
 "Toggle numbering mode
-noremap	 <leader>m :call g:ToggleNuMode()<CR>
+noremap	 <leader>m :set rnu!<CR>
 
 nnoremap <leader>p :wall<CR>:!sh process<CR>
 nnoremap <leader>b :bn<CR>
@@ -69,10 +70,10 @@ let Tlist_File_Close_On_Select = 1
 nnoremap <leader>g :!gnome-open
 
 "Re-source
-nnoremap <leader>vv :source ~/.vimrc<CR>
-nnoremap <leader>vo :new ~/.vimrc<CR>
-
+nnoremap <leader>vv :source $MYVIMRC<CR>
+nnoremap <leader>vo :new $MYVIMRC<CR>
 "OS stuff
+
 nnoremap <leader>rt :!make run-forktree > out<CR>
 nnoremap <leader>rg :!make grade<CR>
 
@@ -80,16 +81,11 @@ nnoremap <leader>rg :!make grade<CR>
 nnoremap <leader>rm :!ant<CR>
 nnoremap <leader>rj :!ant test<CR>
 
-"latex stuff ('d' for document)
-nnoremap <leader>dw :!pdflatex *.tex<CR>
-nnoremap <leader>do :!evince *.pdf &<CR>
-
 "Better window nav
 nnoremap gh <C-W>h
 nnoremap gl <C-W>l
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
-nnoremap gw <C-W>=
 
 "Calculator stuff
 nnoremap <leader>a V:!bc<CR>
@@ -103,41 +99,74 @@ nnoremap <leader>z zfiB<CR>
 "Easy file search
 nnoremap <leader>f :e **/
 
-"Eclim basics
+inoremap <c-u> <esc>gUiwea
+nnoremap <c-u> gUiwe
+vnoremap <leader>" <esc>`<i"<esc>`>la"<esc>
+
+iabbrev @i jbarratt@indeed.com
+iabbrev iab iabbrev
+iabbrev @g joseph.m.barratt@gmail.com
+iabbrev @@ joseph.barratt.us
+
 let g:EclimLogLevel=2
 let g:EclimSignLevel=2
-autocmd Filetype java nnoremap <leader>ei :JavaImport<CR>
-autocmd Filetype java nnoremap <leader>es :JavaSearch -p<Space>
-autocmd Filetype java nnoremap <leader>ed :JavaSearchContext<CR>
-autocmd Filetype java nnoremap <leader>ea :Ant -Divy_initialized=true -Dresolve_run=true<CR>
-autocmd Filetype java nnoremap <leader>eai :Ant<CR>
-autocmd Filetype java nnoremap <leader>ead :Ant deploy -Divy_initialized=true -Dresolve_run=true<CR>
-autocmd Filetype java nnoremap <leader>eadi :Ant deploy<CR>
-"close preview window
-autocmd Filetype java nnoremap <leader>ep :pclose<CR>
-autocmd Filetype java nnoremap <leader>el :lclose<CR>
-autocmd Filetype java 
-"Eclim code stuff
-"f for fix
-autocmd Filetype java nnoremap <leader>sf :JavaCorrect<CR>
-autocmd Filetype java nnoremap <leader>sc :JavaConstructor<CR>
-autocmd Filetype java nnoremap <leader>si :JavaImpl<CR>
-autocmd Filetype java nnoremap <leader>sd :JavaDelegate<CR>
-autocmd Filetype java nnoremap <leader>sg :JavaGet<CR>
-autocmd Filetype java nnoremap <leader>ss :JavaSet<CR>
-autocmd Filetype java nnoremap <leader>sb :JavaGetSet<CR>
-autocmd Filetype java nnoremap <leader>st :JUnitExecute<CR>
-"p for pretty
-autocmd Filetype java nnoremap <leader>sp :JavaFormat<CR>
+augroup filetype_java
+    autocmd!
+    autocmd Filetype java set smartindent
+    "Eclim basics
+    autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImportMissing<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ec :JavaImportClean<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>es :JavaSearch -p<Space>
+    autocmd Filetype java nnoremap <buffer> <localleader>ed :JavaSearchContext<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ea :Ant -Divy_initialized=true -Dresolve_run=true<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>eai :Ant<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ead :Ant deploy -Divy_initialized=true -Dresolve_run=true<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>eadi :Ant deploy<CR>
+    "close preview window
+    autocmd Filetype java nnoremap <buffer> <localleader>ep :pclose<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>el :lclose<CR>
+    "Eclim code stuff
+    "f for fix
+    autocmd Filetype java nnoremap <buffer> <localleader>sf :JavaCorrect<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>sc :JavaConstructor<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>si :JavaImpl<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>sd :JavaDelegate<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>sg :JavaGet<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ss :JavaSet<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>sb :JavaGetSet<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>st :JUnitExecute<CR>
+    "p for pretty
+    autocmd Filetype java nnoremap <buffer> <localleader>sp :JavaFormat<CR>
 
-"Eclim insert mode
-autocmd Filetype java inoremap <C-Space> <C-X><C-U>
-autocmd Filetype java let g:SuperTabDefaultCompletionType = "<c-x><c-u>"
+    autocmd Filetype java :iabbrev <buffer> fi final
+    autocmd Filetype java :iabbrev <buffer> final NOPENOPENOPE
 
-"Haskell stuff
-nnoremap <leader>gt :GhcModType<CR>
-nnoremap <leader>gc :GhcModCheck<CR>
-nnoremap <leader>gl :GhcModLint<CR>
+    "Eclim insert mode
+    autocmd Filetype java inoremap <buffer> <localleader><space> <C-X><C-U>
+    autocmd Filetype java let g:SuperTabDefaultCompletionType = "<c-x><c-u>"
+augroup END
+
+augroup filetype_haskell
+    autocmd!
+    "Haskell stuff
+    autocmd Filetype haskell nnoremap <buffer> <localleader>gt :GhcModType<CR>
+    autocmd Filetype haskell nnoremap <buffer> <localleader>gc :GhcModCheck<CR>
+    autocmd Filetype haskell nnoremap <buffer> <localleader>gl :GhcModLint<CR>
+    autocmd Filetype haskell iabbrev <buffer> da data<space>=<space><left><left><left>
+    autocmd Filetype haskell iabbrev <buffer> data NOPENOPENOPE
+augroup END
+
+augroup filetype_mail
+    autocmd!
+    autocmd Filetype mail setlocal tw=72
+    autocmd Filetype mail setlocal spell
+    autocmd Filetype mail setlocal nonumber
+augroup END
+
+augroup filetype_vim
+    autocmd!
+    autocmd Filetype vim setlocal keywordprg=:help
+augroup END
 
 let g:user_zen_expandabbr_key = '<c-h>'
 
@@ -147,7 +176,6 @@ ab htt http://
 
 "Auto commands
 autocmd! BufnewFile * silent! 0r ~/.vim/frames/frame.%:e
-autocmd Filetype java set smartindent
 
 "Remember code folding
 "au BufWinLeave * silent! mkview 
@@ -159,7 +187,7 @@ let g:EclimXmlValidate = 0
 
 "this doesn't work in the jailshell... use messy style
 filetype plugin on
-call pathogen#helptags()
+"call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
 syntax enable
 set background=dark
@@ -171,14 +199,5 @@ colorscheme solarized
 
 "This is for java projects
 "set makeprg=ant\ -emacs
-
-"functions:
-function! g:ToggleNuMode()
-    if(&rnu == 1)
-        set nu
-    else
-        set rnu
-    endif
-endfunc
 
 noh
