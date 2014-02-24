@@ -76,25 +76,22 @@ inoremap <C-j> <space><space><space><space>
 "Toggle numbering mode
 noremap	 <leader>m :set rnu!<CR>
 
-nnoremap <leader>p :wall<CR>:!sh process<CR>
-nnoremap <leader>b :bn<CR>
-nnoremap <leader>nt :NERDTreeToggle<CR>
-let NERDTreeChDirMode = 2
-let NERDChristmasTree = 1
-nnoremap <leader>tl :TagbarToggle<CR>
-let Tlist_File_Fold_Auto_Close = 1
-let Tlist_File_Close_On_Select = 1
 nnoremap <leader>g :!gnome-open
 
 "Re-source
 nnoremap <leader>vv :source $MYVIMRC<CR>
 nnoremap <leader>vo :new $MYVIMRC<CR>
 
-"Better window nav
+"Better nav
+nnoremap <leader>nt :NERDTreeToggle<CR>
+let NERDTreeChDirMode = 2
+let NERDChristmasTree = 1
 nnoremap gh <C-W>h
 nnoremap gl <C-W>l
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
+nnoremap <leader>p :vsp<CR>
+nnoremap <leader>b :bn<CR>
 
 "Calculator stuff
 nnoremap <leader>a V:!bc<CR>
@@ -112,6 +109,12 @@ inoremap <c-u> <esc>gUiwea
 nnoremap <c-u> gUiwe
 vnoremap <leader>" <esc>`<i"<esc>`>la"<esc>
 
+"Tags
+nnoremap <leader>ta :ta<space>
+nnoremap <leader>tl :TagbarToggle<CR>
+let Tlist_File_Fold_Auto_Close = 1
+let Tlist_File_Close_On_Select = 1
+
 iabbrev @i jbarratt@indeed.com
 iabbrev iab iabbrev
 iabbrev @g joseph.m.barratt@gmail.com
@@ -121,7 +124,8 @@ let g:EclimLogLevel=2
 let g:EclimSignLevel=2
 augroup filetype_java
     autocmd!
-    autocmd Filetype java set smartindent
+    autocmd Filetype java setlocal smartindent
+    autocmd Filetype java setlocal iskeyword=@,48-57,_,192-255,@-@
     "Eclim basics
     autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImport<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>es :JavaSearch -p<Space>
@@ -148,6 +152,16 @@ augroup filetype_java
 
     autocmd Filetype java :iabbrev <buffer> fi final
     autocmd Filetype java :iabbrev <buffer> final NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> pri private
+    autocmd Filetype java :iabbrev <buffer> private NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> pro protected
+    autocmd Filetype java :iabbrev <buffer> protected NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> st static
+    autocmd Filetype java :iabbrev <buffer> static NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> @nn @Nonnull
+    autocmd Filetype java :iabbrev <buffer> @Nonnull NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> @n @Nullable
+    autocmd Filetype java :iabbrev <buffer> @Nullable NOPENOPENOPE
 
     "Eclim insert mode
     autocmd Filetype java inoremap <buffer> <localleader><space> <C-X><C-U>
