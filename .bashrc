@@ -18,7 +18,9 @@ shopt -s checkwinsize
 
 # Common aliases
 alias ls='ls --color=auto'
-alias bv='vim ~/.bashrc && . ~/.bashrc'
-alias bs='. ~/.bashrc'
+alias bs='vim ~/.bashrc && . ~/.bashrc'
+alias ba='vim ~/.bash_aliases && . ~/.bashrc'
 alias tvim='vim -u .vimrc'
 alias hs='. .hsenv/bin/activate'
+alias ppjson='python -mjson.tool'
+alias friendly='. $(which friendly.sh)'
