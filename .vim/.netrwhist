@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/home/jbarratt/Build/eclipse/readme'
-let g:netrw_dirhist_2='/home/jbarratt/Indeed/jasx'
-let g:netrw_dirhist_3='/home/jbarratt/Indeed/local_provisioning/vagrant_vms/main/tomcat-logs/jasx-tomcat'

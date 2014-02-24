@@ -6,13 +6,12 @@ set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
-Bundle 'nerdtree'
-Bundle 'nerdcommenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/nerdcommenter'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'tagbar'
+Bundle 'majutsushi/tagbar'
 Bundle 'Shougo/vimproc'
 Bundle 'eagletmt/ghcmod-vim'
-Bundle 'eclim'
 
 filetype plugin indent on
 
