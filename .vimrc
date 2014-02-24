@@ -39,6 +39,7 @@ set ttyfast
 set backspace=2
 set noswapfile
 set t_Co=16
+set path=.,/usr/include,**,
 
 let mapleader = "-"
 let maplocalleader = ","
@@ -92,6 +93,7 @@ nnoremap gj <C-W>j
 nnoremap gk <C-W>k
 nnoremap <leader>p :vsp<CR>
 nnoremap <leader>b :bn<CR>
+nnoremap <leader>q :q<CR>
 
 "Calculator stuff
 nnoremap <leader>a V:!bc<CR>
@@ -150,21 +152,36 @@ augroup filetype_java
     "p for pretty
     autocmd Filetype java nnoremap <buffer> <localleader>sp :JavaFormat<CR>
 
+    "Misc.
+    autocmd Filetype java nnoremap <buffer> <localleader>; A;<ESC>
+    "Parameters
+    autocmd Filetype java nnoremap <buffer> <localleader>h :execute "normal! ?,\\\\|(\rnw:nohl\r"<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>l f,w
+    "Move by methods
+    autocmd Filetype java nnoremap <buffer> <localleader>m ]m
+    autocmd Filetype java nnoremap <buffer> <localleader>b [m
+    autocmd Filetype java onoremap <buffer> im :<c-u>execute "normal! [mwv]m[Mb"<CR>
+
+    "Shortcuts
     autocmd Filetype java :iabbrev <buffer> fi final
     autocmd Filetype java :iabbrev <buffer> final NOPENOPENOPE
     autocmd Filetype java :iabbrev <buffer> pri private
     autocmd Filetype java :iabbrev <buffer> private NOPENOPENOPE
     autocmd Filetype java :iabbrev <buffer> pro protected
     autocmd Filetype java :iabbrev <buffer> protected NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> pu public
+    autocmd Filetype java :iabbrev <buffer> public NOPENOPENOPE
     autocmd Filetype java :iabbrev <buffer> st static
     autocmd Filetype java :iabbrev <buffer> static NOPENOPENOPE
     autocmd Filetype java :iabbrev <buffer> @nn @Nonnull
     autocmd Filetype java :iabbrev <buffer> @Nonnull NOPENOPENOPE
     autocmd Filetype java :iabbrev <buffer> @n @Nullable
     autocmd Filetype java :iabbrev <buffer> @Nullable NOPENOPENOPE
+    autocmd Filetype java :iabbrev <buffer> St String
+    autocmd Filetype java :iabbrev <buffer> String NOPENOPENOPE
 
     "Eclim insert mode
-    autocmd Filetype java inoremap <buffer> <localleader><space> <C-X><C-U>
+    autocmd Filetype java inoremap <buffer> <C-SPACE> <C-X><C-U>
     autocmd Filetype java let g:SuperTabDefaultCompletionType = "<c-x><c-u>"
 augroup END
 
