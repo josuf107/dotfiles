@@ -6,6 +6,7 @@ import System.IO
 import System.Exit
 import System.Random
 import System.Directory
+import System.FilePath
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
@@ -135,16 +136,22 @@ contexts = [ ("xmonad", xmonadContext)
            , ("bible", bibleContext)
            ]
 
+homeRelative :: FilePath -> IO FilePath
+homeRelative f = fmap (</> f) getHomeDirectory
+
 bibleContext :: X ()
 bibleContext = do
     windows $ W.greedyView "bible"
-    terminalRun "ghci /home/joseph07/projects/esv/study.hs"
-    terminalRun "vim /home/joseph07/projects/esv/reading-plan.txt"
+    study <- liftIO $ homeRelative "projects/esv/study.hs"
+    terminalRun $ "ghci " ++ study
+    plan <- liftIO $ homeRelative "projects/esv/readingplan.txt"
+    terminalRun $ "vim " ++ plan
 
 xmonadContext :: X ()
 xmonadContext = do
     windows (W.greedyView "xmonad")
-    terminalRun "vim /home/jbarratt/.xmonad/xmonad.hs"
+    xm <- liftIO $ homeRelative ".xmonad/xmonad.hs"
+    terminalRun $ "vim " ++ xm
 
 networkContext :: X ()
 networkContext = do
