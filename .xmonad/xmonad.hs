@@ -120,7 +120,7 @@ bibleContext = do
 
 xmonadContext = do
     windows (W.greedyView "xmonad")
-    terminalRun "vim /home/jbarratt/.xmonad/xmonad.hs"
+    terminalRun "vim /home/joseph07/.xmonad/xmonad.hs"
 
 networkContext = do
     windows (W.greedyView "network")
@@ -214,7 +214,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
         , mapKey xK_bracketright $ spawn "amixer -q set Master 3+ unmute"
         , mapKey xK_bracketleft $ spawn "amixer -q set Master 3- unmute"
         , mapKey xK_backslash $ spawn "amixer -q set Master toggle"
-        , mapKey xK_s $ appendFilePrompt promptConfig "/home/jbarratt/.scratch"
+        , mapKey xK_s $ appendFilePrompt promptConfig "/home/joseph07/.scratch"
         , mapKey xK_i $ io (getNextTask >>= showTask)
         , mapShiftKey xK_i $ io (getPreviousTask >>= showTask)
         , mapKey xK_a $ io showTasks
@@ -293,7 +293,6 @@ myTabConfig = defaultTheme {   activeBorderColor = "#7C7C7C"
                              , inactiveColor = "#000000" }
 
 myLayout = 	onWorkspace "2:code" (avoidStruts (tiled ||| Full)) $
-            onWorkspace "3:chat" (avoidStruts (tiled ||| Full)) $
             onWorkspace "1:web" (avoidStruts tiled ||| fullscreenFull Full) $
             onWorkspace "4:media" (avoidStruts tiled ||| fullscreenFull Full) $
             onWorkspace "7:writing" (fullscreenFull Full) $
@@ -361,7 +360,7 @@ myFocusFollowsMouse = False
 --
 -- By default, do nothing.
 myStartupHook = do
-    spawn "xmodmap ~/.caps_swap"
+    spawn "xmodmap ~/.caps_unswap && sleep 3 && xmodmap ~/.caps_swap"
     io getRandomBackground >>= spawn . ("feh --bg-scale " ++)
     setWMName "LG3D"
     spawn "xrandr --output VGA1 --auto --left-of HDMI1"
@@ -422,8 +421,12 @@ showTask n = getTask n >>= updateInfoBar
 showTasks :: IO ()
 showTasks = do
     tasks <- getCurrentTasks
-    let t = intercalate " | " . reverse . fmap (\(i, d) -> show i ++ " - " ++ d) $ zip [0..] tasks
-    updateInfoBar $ "Tasks: " ++ t
+    updateInfoBar $ "Tasks: " ++ (format tasks)
+    where 
+        format = intercalate " | "
+            . reverse
+            . fmap (\(i, d) -> show i ++ " - " ++ d) 
+            . zip [0..] 
 
 getCurrentTask :: IO (Maybe Int)
 getCurrentTask = do
@@ -458,13 +461,13 @@ getPreviousTask = do
 
 updateInfoBar :: String -> IO ()
 updateInfoBar i = do
-    h <- openFile "/home/jbarratt/.info" WriteMode
+    h <- openFile "/home/joseph07/.info" WriteMode
     hPutStrLn h i
     hClose h
 
 readInfoBar :: IO String
 readInfoBar = do
-    h <- openFile "/home/jbarratt/.info" ReadMode
+    h <- openFile "/home/joseph07/.info" ReadMode
     r <- hGetContents h
     r `seq` hClose h
     return r
