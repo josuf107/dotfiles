@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 dotdir=~/dotfiles
 . $dotdir/.bashrc
+export PATH=$PATH:$dotdir/bin
 if [ ! -e ~/.vimrc ]
 then
     ln -s $dotdir/.vimrc ~/.vimrc
