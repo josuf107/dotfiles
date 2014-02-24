@@ -1,7 +1,22 @@
 set nocompatible
-"let g:zenburn_high_Contrast=1
-"colors zenburn
-"colorscheme zenburn
+
+" Vundle
+filetype off
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+Bundle 'gmarik/vundle'
+
+Bundle 'nerdtree'
+Bundle 'nerdcommenter'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'tagbar'
+Bundle 'Shougo/vimproc'
+Bundle 'eagletmt/ghcmod-vim'
+Bundle 'eclim'
+
+filetype plugin indent on
+
+" Common Settings
 set display=lastline
 set number
 set tabstop=4
@@ -180,10 +195,6 @@ let g:EclimHtmlValidate = 0
 let g:EclimXmlValidate = 0
 
 "this doesn't work in the jailshell... use messy style
-filetype plugin on
-call pathogen#helptags()
-call pathogen#runtime_append_all_bundles()
-syntax enable
 "set background=dark
 "colorscheme solarized
 "Omnicompletion

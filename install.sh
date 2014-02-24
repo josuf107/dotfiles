@@ -8,7 +8,9 @@ then
 fi
 if [ ! -e ~/.vim ]
 then
-    ln -s $dotdir/.vim ~/.vim
+    mkdir -p ~/.vim/bundle/vundle
+    git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+    vim +BundleInstall +qall
 fi
 if [ ! -e ~/.xmonad ]
 then
