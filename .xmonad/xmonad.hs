@@ -365,7 +365,7 @@ myStartupHook = do
     io getRandomBackground >>= spawn . ("feh --bg-scale " ++)
     setWMName "LG3D"
     spawn "xrandr --output VGA1 --auto --left-of HDMI1"
-    spawn "firefox"
+    {-spawn "firefox"-}
  
 getRandomBackground :: IO FilePath
 getRandomBackground = do
