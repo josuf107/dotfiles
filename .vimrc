@@ -24,6 +24,7 @@ set ruler
 set ttyfast
 set backspace=2
 set noswapfile
+set t_Co=16
 
 let mapleader = "-"
 let maplocalleader = ","
@@ -37,6 +38,8 @@ set gdefault
 set showmatch
 set hlsearch
 set incsearch
+set lcs=trail:.,tab:>-
+set list
 
 "unhighlight search
 nnoremap <leader><space> :noh<cr>
@@ -64,7 +67,7 @@ nnoremap <leader>b :bn<CR>
 nnoremap <leader>nt :NERDTreeToggle<CR>
 let NERDTreeChDirMode = 2
 let NERDChristmasTree = 1
-nnoremap <leader>tl :TlistToggle<CR>
+nnoremap <leader>tl :TagbarToggle<CR>
 let Tlist_File_Fold_Auto_Close = 1
 let Tlist_File_Close_On_Select = 1
 nnoremap <leader>g :!gnome-open
@@ -72,14 +75,6 @@ nnoremap <leader>g :!gnome-open
 "Re-source
 nnoremap <leader>vv :source $MYVIMRC<CR>
 nnoremap <leader>vo :new $MYVIMRC<CR>
-"OS stuff
-
-nnoremap <leader>rt :!make run-forktree > out<CR>
-nnoremap <leader>rg :!make grade<CR>
-
-"Java stuff
-nnoremap <leader>rm :!ant<CR>
-nnoremap <leader>rj :!ant test<CR>
 
 "Better window nav
 nnoremap gh <C-W>h
@@ -114,8 +109,7 @@ augroup filetype_java
     autocmd!
     autocmd Filetype java set smartindent
     "Eclim basics
-    autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImportMissing<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>ec :JavaImportClean<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImport<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>es :JavaSearch -p<Space>
     autocmd Filetype java nnoremap <buffer> <localleader>ed :JavaSearchContext<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>ea :Ant -Divy_initialized=true -Dresolve_run=true<CR>
@@ -187,17 +181,14 @@ let g:EclimXmlValidate = 0
 
 "this doesn't work in the jailshell... use messy style
 filetype plugin on
-"call pathogen#helptags()
+call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
 syntax enable
-set background=dark
-colorscheme solarized
+"set background=dark
+"colorscheme solarized
 "Omnicompletion
 "set omnifunc=javacomplete#Complete
 "inoremap <C-SPACE> <C-X><C-O>
 "nnoremap <C-SPACE> <C-X><C-O>
-
-"This is for java projects
-"set makeprg=ant\ -emacs
 
 noh
