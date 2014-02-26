@@ -82,6 +82,7 @@ nnoremap <leader>g :!gnome-open
 "Re-source
 nnoremap <leader>vv :source $MYVIMRC<CR>
 nnoremap <leader>vo :new $MYVIMRC<CR>
+nnoremap <leader>v; :execute "normal! :new $MYVIMRC\ro\e\":p"<CR>
 
 "Better nav
 nnoremap <leader>nt :NERDTreeToggle<CR>
@@ -148,7 +149,7 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>sg :JavaGet<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>ss :JavaSet<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>sb :JavaGetSet<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>st :JUnitExecute<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>st :JUnit<CR>
     "p for pretty
     autocmd Filetype java nnoremap <buffer> <localleader>sp :JavaFormat<CR>
 
@@ -193,6 +194,16 @@ augroup filetype_haskell
     autocmd Filetype haskell nnoremap <buffer> <localleader>gl :GhcModLint<CR>
     autocmd Filetype haskell iabbrev <buffer> da data<space>=<space><left><left><left>
     autocmd Filetype haskell iabbrev <buffer> data NOPENOPENOPE
+augroup END
+
+augroup filetype_markdown
+    autocmd!
+    autocmd Filetype markdown setlocal tw=72
+    autocmd Filetype markdown setlocal spell
+    autocmd Filetype markdown setlocal makeprg=markdown\ %\ >\ %:r.html
+    autocmd Filetype markdown nnoremap <buffer> <localleader>sh "zyy"zpVr-
+    autocmd Filetype markdown nnoremap <buffer> <localleader>h "zyy"zpVr=
+    autocmd Filetype markdown inoremap <buffer> * *<space><space><space>
 augroup END
 
 augroup filetype_mail
