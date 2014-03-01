@@ -1,6 +1,6 @@
 Config { font = "xft:inconsolata:size=14:antialias=true"
-       , bgColor = "#002b36"
-       , fgColor = "#657b83"
+       , bgColor = "#000000"
+       , fgColor = "#FFFFFF"
        , position = Top 
        , lowerOnStart = True
        , commands = [ Run Weather "KAUS" ["-t"," <tempF>F","-L","64","-H","77","--normal","green","--high","red","--low","lightblue"] 36000

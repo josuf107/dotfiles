@@ -10,8 +10,8 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'majutsushi/tagbar'
-Bundle 'Shougo/vimproc'
-Bundle 'eagletmt/ghcmod-vim'
+"Bundle 'Shougo/vimproc'
+"Bundle 'eagletmt/ghcmod-vim'
 
 filetype plugin indent on
 

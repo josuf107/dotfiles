@@ -30,8 +30,9 @@ import qualified Data.Map        as M
 -- certain contrib modules.
 --
 myTerminal :: String
-myTerminal      = "gnome-terminal --hide-menubar"
+-- myTerminal      = "gnome-terminal --hide-menubar"
 -- myTerminal      = "urxvt"
+myTerminal = "terminator"
 
 terminalRun :: MonadIO m => String -> m ()
 terminalRun c = spawn $ myTerminal ++ " -x " ++ c
