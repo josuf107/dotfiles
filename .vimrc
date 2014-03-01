@@ -154,13 +154,19 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>sp :JavaFormat<CR>
 
     "Misc.
+    autocmd Filetype java nnoremap <buffer> <localleader>vv :source $MYVIMRC<CR>:set ft=java<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>; A;<ESC>
+    autocmd Filetype java nnoremap <buffer> <localleader>cf :call <SID>JavaConstructorField()<CR>
+    autocmd Filetype java inoremap <buffer> <c-f> <ESC>:call <SID>JavaConstructorField()<CR>o
+    "Java words what what!
+    autocmd Filetype java noremap <buffer> <localleader>w :<c-u>call <SID>JavaWord(1)<CR>
+    autocmd Filetype java noremap <buffer> <localleader>b :<c-u>call <SID>JavaWord(0)<CR>
     "Parameters
     autocmd Filetype java nnoremap <buffer> <localleader>h :execute "normal! ?,\\\\|(\rnw:nohl\r"<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>l f,w
     "Move by methods
     autocmd Filetype java nnoremap <buffer> <localleader>m ]m
-    autocmd Filetype java nnoremap <buffer> <localleader>b [m
+    autocmd Filetype java nnoremap <buffer> <localleader>p [m
     autocmd Filetype java onoremap <buffer> im :<c-u>execute "normal! [mwv]m[Mb"<CR>
 
     "Shortcuts
@@ -185,6 +191,27 @@ augroup filetype_java
     autocmd Filetype java inoremap <buffer> <C-SPACE> <C-X><C-U>
     autocmd Filetype java let g:SuperTabDefaultCompletionType = "<c-x><c-u>"
 augroup END
+
+function! <SID>JavaConstructorField()
+    let temp = @"
+    yank
+    normal Ithis.
+    normal A = 
+    put
+    normal k
+    join
+    normal A;
+    let @" = temp
+endfunction
+
+function! <SID>JavaWord(forward)
+    if a:forward
+        let opts = ''
+    else
+        let opts = 'b'
+    endif
+    let s = search('\v[A-Z]|(<.)', opts)
+endfunction
 
 augroup filetype_haskell
     autocmd!
