@@ -1,6 +1,6 @@
 set nocompatible
 
-" Vundle
+" Vundle {{{1
 filetype off
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
@@ -15,7 +15,7 @@ Bundle 'eagletmt/ghcmod-vim'
 
 filetype plugin indent on
 
-" Common Settings
+" Common Settings {{{1
 set display=lastline
 set number
 set tabstop=4
@@ -56,6 +56,7 @@ set incsearch
 set lcs=trail:.,tab:>-
 set list
 
+" Global Keymap {{{1
 "unhighlight search
 nnoremap <leader><space> :noh<cr>
 
@@ -65,8 +66,10 @@ nnoremap j gj
 nnoremap k gk
 
 "I need the functionality of : far more often than ;
-nnoremap		;		:
-nnoremap		:		;
+nnoremap        ;       :
+nnoremap        :       ;
+vnoremap        ;       :
+vnoremap        :       ;
 
 "In case I can't use caps lock
 inoremap kjh <esc>
@@ -77,14 +80,12 @@ inoremap <C-j> <space><space><space><space>
 "Toggle numbering mode
 noremap	 <leader>m :set rnu!<CR>
 
-nnoremap <leader>g :!gnome-open
-
 "Re-source
 nnoremap <leader>vv :source $MYVIMRC<CR>
 nnoremap <leader>vo :new $MYVIMRC<CR>
 nnoremap <leader>v; :execute "normal! :new $MYVIMRC\ro\e\":p"<CR>
 
-"Better nav
+" Better nav {{{2
 nnoremap <leader>nt :NERDTreeToggle<CR>
 let NERDTreeChDirMode = 2
 let NERDChristmasTree = 1
@@ -118,6 +119,7 @@ nnoremap <leader>tl :TagbarToggle<CR>
 let Tlist_File_Fold_Auto_Close = 1
 let Tlist_File_Close_On_Select = 1
 
+" Global Abbreviations {{{1
 iabbrev @i jbarratt@indeed.com
 iabbrev iab iabbrev
 iabbrev @g joseph.m.barratt@gmail.com
@@ -125,10 +127,14 @@ iabbrev @@ joseph.barratt.us
 
 let g:EclimLogLevel=2
 let g:EclimSignLevel=2
+
+" Filetype Java {{{1
 augroup filetype_java
     autocmd!
     autocmd Filetype java setlocal smartindent
     autocmd Filetype java setlocal iskeyword=@,48-57,_,192-255,@-@
+    autocmd Filetype java setlocal foldmethod=indent
+    autocmd Filetype java setlocal nofoldenable
     "Eclim basics
     autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImport<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>es :JavaSearch -p<Space>
@@ -158,6 +164,7 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>; A;<ESC>
     autocmd Filetype java nnoremap <buffer> <localleader>cf :call <SID>JavaConstructorField()<CR>
     autocmd Filetype java inoremap <buffer> <c-f> <ESC>:call <SID>JavaConstructorField()<CR>o
+    autocmd Filetype java nnoremap <buffer> <localleader>t :vsp<CR>:execute "tag " . expand("%:t:r") . "Test"<CR>
     "Java words what what!
     autocmd Filetype java noremap <buffer> <localleader>w :<c-u>call <SID>JavaWord(1)<CR>
     autocmd Filetype java noremap <buffer> <localleader>b :<c-u>call <SID>JavaWord(0)<CR>
@@ -192,6 +199,7 @@ augroup filetype_java
     autocmd Filetype java let g:SuperTabDefaultCompletionType = "<c-x><c-u>"
 augroup END
 
+" Java Functions {{{1
 function! <SID>JavaConstructorField()
     let temp = @"
     yank
@@ -213,6 +221,7 @@ function! <SID>JavaWord(forward)
     let s = search('\v[A-Z]|(<.)', opts)
 endfunction
 
+" Filetype Haskell {{{1
 augroup filetype_haskell
     autocmd!
     "Haskell stuff
@@ -223,6 +232,7 @@ augroup filetype_haskell
     autocmd Filetype haskell iabbrev <buffer> data NOPENOPENOPE
 augroup END
 
+" Filetype Markdown {{{1
 augroup filetype_markdown
     autocmd!
     autocmd Filetype markdown setlocal tw=72
@@ -233,6 +243,7 @@ augroup filetype_markdown
     autocmd Filetype markdown inoremap <buffer> * *<space><space><space>
 augroup END
 
+" Filetype Mail {{{1
 augroup filetype_mail
     autocmd!
     autocmd Filetype mail setlocal tw=72
@@ -240,11 +251,17 @@ augroup filetype_mail
     autocmd Filetype mail setlocal nonumber
 augroup END
 
+" FileType Vim {{{1
 augroup filetype_vim
     autocmd!
     autocmd Filetype vim setlocal keywordprg=:help
+    autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType vim inoremap <buffer> <c-h> <esc>I"<space><esc>A<space><esc>3a{<esc>
+    autocmd FileType vim nnoremap <buffer> <localleader>h1 I"<space><esc>A<space><esc>3a{<esc>a1<esc>
+    autocmd FileType vim nnoremap <buffer> <localleader>h2 I"<space><esc>A<space><esc>3a{<esc>a2<esc>
 augroup END
 
+" Legacy {{{1
 let g:user_zen_expandabbr_key = '<c-h>'
 
 ab htt http://
