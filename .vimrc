@@ -288,3 +288,21 @@ let g:EclimXmlValidate = 0
 "nnoremap <C-SPACE> <C-X><C-O>
 
 noh
+
+" Latex {{{1
+augroup filetype_latex
+    autocmd!
+    autocmd Filetype latex let b:inquote = 0
+    autocmd Filetype latex inoremap <buffer> " <esc>:call <SID>LQuote()<cr>a
+augroup END
+
+function! <SID>LQuote()
+    if b:inquote
+        let q = "''"
+        let b:inquote = 0
+    else
+        let q = "``"
+        let b:inquote = 1
+    endif
+    execute ':normal a' . q
+endfunction
