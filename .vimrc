@@ -389,9 +389,10 @@ augroup END
 function! <SID>LQuote()
     if b:inquote
         let q = "''"
+        let b:inquote = 0
     else
         let q = "``"
+        let b:inquote = 1
     endif
-    let b:inquote = !b:inquote
     execute ':normal a' . q
 endfunction
