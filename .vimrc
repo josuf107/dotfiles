@@ -8,7 +8,7 @@ Bundle 'gmarik/vundle'
 
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/nerdcommenter'
-Bundle 'altercation/vim-colors-solarized'
+"Bundle 'altercation/vim-colors-solarized'
 Bundle 'majutsushi/tagbar'
 "Bundle 'Shougo/vimproc'
 "Bundle 'eagletmt/ghcmod-vim'
@@ -38,7 +38,7 @@ set ruler
 set ttyfast
 set backspace=2
 set noswapfile
-set t_Co=16
+syntax enable
 set path=.,/usr/include,**,
 
 let mapleader = "-"
@@ -65,8 +65,10 @@ nnoremap j gj
 nnoremap k gk
 
 "I need the functionality of : far more often than ;
-nnoremap		;		:
-nnoremap		:		;
+nnoremap        ;       :
+nnoremap        :       ;
+vnoremap        ;       :
+vnoremap        :       ;
 
 "In case I can't use caps lock
 inoremap kjh <esc>
@@ -75,7 +77,7 @@ inoremap kjh <esc>
 inoremap <C-j> <space><space><space><space>
 
 "Toggle numbering mode
-noremap	 <leader>m :set rnu!<CR>
+noremap <leader>m :set rnu!<CR>
 
 nnoremap <leader>g :!gnome-open
 
@@ -195,12 +197,12 @@ augroup END
 function! <SID>JavaConstructorField()
     let temp = @"
     yank
-    normal Ithis.
-    normal A = 
+    normal! Ithis.
+    normal! A = 
     put
-    normal k
+    normal! k
     join
-    normal A;
+    normal! A;
     let @" = temp
 endfunction
 
