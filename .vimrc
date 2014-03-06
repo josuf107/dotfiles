@@ -165,6 +165,7 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>cf :call <SID>JavaConstructorField()<CR>
     autocmd Filetype java inoremap <buffer> <c-f> <ESC>:call <SID>JavaConstructorField()<CR>o
     autocmd Filetype java nnoremap <buffer> <localleader>t :vsp<CR>:execute "tag " . expand("%:t:r") . "Test"<CR>
+    autocmd Filetype java inoremap <buffer> " ""<left>
     "Java words what what!
     autocmd Filetype java noremap <buffer> <localleader>w :<c-u>call <SID>JavaWord(1)<CR>
     autocmd Filetype java noremap <buffer> <localleader>b :<c-u>call <SID>JavaWord(0)<CR>
@@ -235,6 +236,13 @@ augroup END
 " Filetype Markdown {{{1
 augroup filetype_markdown
     autocmd!
+    autocmd BufNew README setlocal filetype=markdown
+    autocmd BufNew README setlocal tw=72
+    autocmd BufNew README setlocal spell
+    autocmd BufNew README setlocal makeprg=markdown\ %\ >\ %:r.html
+    autocmd BufNew README nnoremap <buffer> <localleader>sh "zyy"zpVr-
+    autocmd BufNew README nnoremap <buffer> <localleader>h "zyy"zpVr=
+    autocmd BufNew README inoremap <buffer> * *<space><space><space>
     autocmd Filetype markdown setlocal tw=72
     autocmd Filetype markdown setlocal spell
     autocmd Filetype markdown setlocal makeprg=markdown\ %\ >\ %:r.html
@@ -259,6 +267,13 @@ augroup filetype_vim
     autocmd FileType vim inoremap <buffer> <c-h> <esc>I"<space><esc>A<space><esc>3a{<esc>
     autocmd FileType vim nnoremap <buffer> <localleader>h1 I"<space><esc>A<space><esc>3a{<esc>a1<esc>
     autocmd FileType vim nnoremap <buffer> <localleader>h2 I"<space><esc>A<space><esc>3a{<esc>a2<esc>
+augroup END
+
+" FileType php {{{1
+augroup filetype_php
+    autocmd!
+    autocmd Filetype php setlocal foldmethod=indent
+    autocmd Filetype php setlocal nofoldenable
 augroup END
 
 " Legacy {{{1

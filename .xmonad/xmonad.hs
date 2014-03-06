@@ -21,7 +21,7 @@ import XMonad.Prompt.Shell
 import XMonad.Util.Dmenu
 import XMonad.Util.Run
 
-import XMonad.Task
+-- import XMonad.Task
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -107,7 +107,8 @@ myWorkspaces    =
 
 indeedSpaces :: [String]
 indeedSpaces =
-    [ "central"
+    [ "gonzo"
+    , "central"
     , "beaker"
     , "scooter"
     , "service"
@@ -253,9 +254,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
             spawn "amixer -q set PCM toggle"
         , mapKey xK_s indeed
         , mapShiftKey xK_s shiftIndeed
-        , mapKey xK_i $ io (getNextTask >>= showTask)
-        , mapShiftKey xK_i $ io (getPreviousTask >>= showTask)
-        , mapKey xK_a $ io showTasks
+        -- , mapKey xK_i $ io (getNextTask >>= showTask)
+        -- , mapShiftKey xK_i $ io (getPreviousTask >>= showTask)
+        -- , mapKey xK_a $ io showTasks
         -- Quit xmonad
         , mapShiftKey xK_q $ io exitSuccess
         -- Restart xmonad
