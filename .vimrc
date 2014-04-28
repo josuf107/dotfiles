@@ -6,12 +6,13 @@ set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
-Bundle 'scrooloose/nerdtree'
+"Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'majutsushi/tagbar'
-Bundle 'Shougo/vimproc'
-Bundle 'eagletmt/ghcmod-vim'
+"Bundle 'Shougo/vimproc'
+"Bundle 'eagletmt/ghcmod-vim'
+Bundle 'pig.vim'
 
 filetype plugin indent on
 
@@ -128,6 +129,24 @@ iabbrev @@ joseph.barratt.us
 let g:EclimLogLevel=2
 let g:EclimSignLevel=2
 
+" Local Abbreviations {{{1
+silent! source .abbrev
+
+inoremap <leader>a<leader> <esc>:call <sid>AddAbbrev(expand("<cword>"), 1)<cr>
+inoremap <leader>n<leader> <esc>:call <sid>AddAbbrev(input("Abbreviate what? "), 0)<cr>
+nnoremap <leader>an :call <sid>AddAbbrev(input("Abbreviate what? "), 0)<cr>
+nnoremap <leader>ao :new .abbrev<cr>
+nnoremap <leader>aa :silent! source .abbrev<cr>
+
+function! <sid>AddAbbrev(result, insertMode)
+    let na = input("New abbreviation for ".a:result.": ")
+    call system("echo 'iabbrev ".na." ".a:result."' >> .abbrev")
+    silent source .abbrev
+    if a:insertMode
+        startinsert!
+    endif
+endfunction
+
 " Filetype Java {{{1
 augroup filetype_java
     autocmd!
@@ -139,6 +158,7 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImport<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>es :JavaSearch -p<Space>
     autocmd Filetype java nnoremap <buffer> <localleader>ed :JavaSearchContext<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>er :JavaRename
     autocmd Filetype java nnoremap <buffer> <localleader>ea :Ant -Divy_initialized=true -Dresolve_run=true<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>eai :Ant<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>ead :Ant deploy -Divy_initialized=true -Dresolve_run=true<CR>
@@ -165,7 +185,10 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>cf :call <SID>JavaConstructorField()<CR>
     autocmd Filetype java inoremap <buffer> <c-f> <ESC>:call <SID>JavaConstructorField()<CR>o
     autocmd Filetype java nnoremap <buffer> <localleader>t :vsp<CR>:execute "tag " . expand("%:t:r") . "Test"<CR>
-    autocmd Filetype java inoremap <buffer> " ""<left>
+    autocmd Filetype java nnoremap <buffer> <localleader>ct :silent !ctags -R src test &<CR><C-L>
+
+    "Customizing
+    autocmd Filetype java nnoremap <buffer> <localleader>na :new $MYVIMRC<CR>gg/^" Filetype Java<CR>/^\s*"Shortcuts<CR>}Oautocmd Filetype java iabbrev <buffer> 
     "Java words what what!
     autocmd Filetype java noremap <buffer> <localleader>w :<c-u>call <SID>JavaWord(1)<CR>
     autocmd Filetype java noremap <buffer> <localleader>b :<c-u>call <SID>JavaWord(0)<CR>
@@ -178,22 +201,40 @@ augroup filetype_java
     autocmd Filetype java onoremap <buffer> im :<c-u>execute "normal! [mwv]m[Mb"<CR>
 
     "Shortcuts
-    autocmd Filetype java :iabbrev <buffer> fi final
-    autocmd Filetype java :iabbrev <buffer> final NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> pri private
-    autocmd Filetype java :iabbrev <buffer> private NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> pro protected
-    autocmd Filetype java :iabbrev <buffer> protected NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> pu public
-    autocmd Filetype java :iabbrev <buffer> public NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> st static
-    autocmd Filetype java :iabbrev <buffer> static NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> @nn @Nonnull
-    autocmd Filetype java :iabbrev <buffer> @Nonnull NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> @n @Nullable
-    autocmd Filetype java :iabbrev <buffer> @Nullable NOPENOPENOPE
-    autocmd Filetype java :iabbrev <buffer> St String
-    autocmd Filetype java :iabbrev <buffer> String NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> Sop System.out.println);<left><left>
+    autocmd Filetype java iabbrev <buffer> fi final
+    autocmd Filetype java iabbrev <buffer> final NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> pri private
+    autocmd Filetype java iabbrev <buffer> private NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> pro protected
+    autocmd Filetype java iabbrev <buffer> protected NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> pu public
+    autocmd Filetype java iabbrev <buffer> public NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> st static
+    autocmd Filetype java iabbrev <buffer> static NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> @nn @Nonnull
+    autocmd Filetype java iabbrev <buffer> @Nonnull NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> @n @Nullable
+    autocmd Filetype java iabbrev <buffer> @Nullable NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> St String
+    autocmd Filetype java iabbrev <buffer> String NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> vo void
+    autocmd Filetype java iabbrev <buffer> void NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> pus public<space>static
+    autocmd Filetype java iabbrev <buffer> pusv public<space>static<space>void
+    autocmd Filetype java iabbrev <buffer> pusf public<space>static<space>final
+    autocmd Filetype java iabbrev <buffer> pris private<space>static
+    autocmd Filetype java iabbrev <buffer> prisv private<space>static<space>void
+    autocmd Filetype java iabbrev <buffer> prisf private<space>static<space>final
+    autocmd Filetype java iabbrev <buffer> rtn return
+    autocmd Filetype java iabbrev <buffer> return NOPENOPENOPE
+    autocmd Filetype java iabbrev <buffer> bo boolean
+    autocmd Filetype java iabbrev <buffer> boolean NOPENOPENOPE
+
+    "Fancy Shortcuts
+    autocmd Filetype java iabbrev <buffer> if if<space>()<space>{<cr>}<up><esc>0f(a<c-o>:call getchar()<cr>
+    autocmd Filetype java iabbrev <buffer> for for<space>()<space>{<cr>}<up><esc>0f(a<c-o>:call getchar()<cr>
+    autocmd Filetype java iabbrev <buffer> while while<space>()<space>{<cr>}<up><esc>0f(a<c-o>:call getchar()<cr>
 
     "Eclim insert mode
     autocmd Filetype java inoremap <buffer> <C-SPACE> <C-X><C-U>
@@ -248,6 +289,7 @@ augroup filetype_markdown
     autocmd Filetype markdown setlocal makeprg=markdown\ %\ >\ %:r.html
     autocmd Filetype markdown nnoremap <buffer> <localleader>sh "zyy"zpVr-
     autocmd Filetype markdown nnoremap <buffer> <localleader>h "zyy"zpVr=
+    autocmd Filetype markdown nnoremap <buffer> <localleader>t o<!---<space>tags<cr><cr>--><esc>ka+
     autocmd Filetype markdown inoremap <buffer> * *<space><space><space>
 augroup END
 
@@ -274,6 +316,12 @@ augroup filetype_php
     autocmd!
     autocmd Filetype php setlocal foldmethod=indent
     autocmd Filetype php setlocal nofoldenable
+augroup END
+
+" Bash Aliases {{{1
+augroup bash_aliases
+    autocmd!
+    autocmd BufRead .bash_aliases iabbrev <buffer> al alias=<left>
 augroup END
 
 " Legacy {{{1
@@ -303,3 +351,20 @@ let g:EclimXmlValidate = 0
 "nnoremap <C-SPACE> <C-X><C-O>
 
 noh
+
+" Filetype Latex {{{1
+augroup filetype_tex
+    autocmd!
+    autocmd Filetype tex let b:inquote = 0
+    autocmd Filetype tex inoremap <buffer> " <esc>:call <SID>LQuote()<cr>a
+augroup END
+
+function! <SID>LQuote()
+    if b:inquote
+        let q = "''"
+    else
+        let q = "``"
+    endif
+    let b:inquote = !b:inquote
+    execute ':normal a' . q
+endfunction
