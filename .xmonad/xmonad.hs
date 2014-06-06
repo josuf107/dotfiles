@@ -151,8 +151,13 @@ bibleContext = do
 xmonadContext :: X ()
 xmonadContext = do
     windows (W.greedyView "xmonad")
-    xm <- liftIO $ homeRelative ".xmonad/xmonad.hs"
-    terminalRun $ "vim " ++ xm
+    isEmpty <- fmap (null . W.index . windowset) get
+    if isEmpty
+        then do
+            xm <- liftIO $ homeRelative ".xmonad/xmonad.hs"
+            terminalRun $ "ghci " ++ xm
+            terminalRun $ "vim " ++ xm
+        else return ()
 
 networkContext :: X ()
 networkContext = do
