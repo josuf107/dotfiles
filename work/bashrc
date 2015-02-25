@@ -1,0 +1,22 @@
+# Indeed stuff
+#export JAVA_HOME=/opt/java
+#export JDK_HOME=/opt/java
+export JAVA_HOME=/usr/lib/jvm/j2sdk1.7-oracle/
+export JDK_HOME=/usr/lib/jvm/j2sdk1.7-oracle/
+export JRE_HOME=/usr/lib/jvm/j2sdk1.7-oracle/
+export IVY_IGNORE_RELEASE=1
+export INDEED_PROJECT_DIR=~/Indeed
+export INDEED_CONFIG_DIR=$INDEED_PROJECT_DIR/javadev/local-config
+export ANT_HOME=$INDEED_PROJECT_DIR/javadev/ant
+export CATALINA_HOME=$INDEED_PROJECT_DIR/javadev/tomcat
+export CATALINA7_HOME=$INDEED_PROJECT_DIR/javadev/apache-tomcat-7.0.8
+export CATALINA_JAVA_OPTS="-Xms1024m -Xmx8g -XX:PermSize=32m -XX:MaxPermSize=256m -Dindeed.config.dir=$INDEED_CONFIG_DIR -Dindeed.staging.level=dev"
+
+export PATH=$INDEED_PROJECT_DIR/aggdev-tools/bin:$INDEED_PROJECT_DIR/javadev/ant/lib:$ANT_HOME/bin:$INDEED_PROJECT_DIR/javadev/bin:$PATH:$JAVA_HOME/bin:$CATALINA_HOME/bin
+export SLAVE_THESE_ITEMS="activeads afskeywords afstemplates analysis_location analysis_query browse browsejobs cmpgrpinfo cmpinfo eastasian_sponjobs expjobs findjobs geo geo_stopwords global_sponjobs goodjadomains hiddenjobs illegal_cmp_forums imptag kwadindex locinfo main normalization onetrelatedsearches orgmodel orgmodel_alt pages privileged_ips publishers query_stopwords recommendations samplequeries sample_queries semchannels sjmodel sjmodel_alt sjmodel_intl spell spiders sponjobs srcboost ramses_metadata"
+export JPDA_ADDRESS=5005
+export PATH=$PATH:/opt/vagrant/bin:~/Build/hadoop-0.20.2-cdh3u3/:~/Build/hadoop-0.20.2-cdh3u3/bin:~/Build/hbase-0.90.4-cdh3u3/bin/
+export ES_MIN_MEM=2g
+export CLASSPATH=/etc/hadoop/conf
+export PIG_CLASSPATH=/etc/hadoop/conf:/home/jbarratt/.ivy2/cache-new/indeed/common-util/jars/common-util-0.2.477.jar:/home/jbarratt/.ivy2/cache-new/indeed/squall-jeffzip/jars/squall-jeffzip-cdh3-0.1.4.jar:/home/jbarratt/.ivy2/cache-new/indeed/squall-mmap/jars/squall-mmap-0.1.35.jar:/home/jbarratt/.ivy2/cache-new/indeed/squall-common/jars/squall-common-0.1.95.jar:/home/jbarratt/.ivy2/cache-new/indeed/squall-pigutil/jars/squall-pigutil-cdh3-0.1.136.jar
+export DISPLAY=0:0
