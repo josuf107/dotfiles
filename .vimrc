@@ -39,11 +39,12 @@ set ruler
 set ttyfast
 set backspace=2
 set noswapfile
-set t_Co=16
+"set t_Co=16
+syntax enable
 set path=.,/usr/include,**,
 
 let mapleader = "-"
-let maplocalleader = ","
+let maplocalleader = "\\"
 
 nnoremap / /\v
 vnoremap / /\v
@@ -54,7 +55,7 @@ set gdefault
 set showmatch
 set hlsearch
 set incsearch
-set lcs=trail:.,tab:>-
+set listchars=trail:.,tab:>-
 set list
 
 " Global Keymap {{{1
@@ -67,19 +68,22 @@ nnoremap j gj
 nnoremap k gk
 
 "I need the functionality of : far more often than ;
-nnoremap        ;       :
-nnoremap        :       ;
-vnoremap        ;       :
-vnoremap        :       ;
+"nnoremap        ;       :
+"nnoremap        :       ;
+"vnoremap        ;       :
+"vnoremap        :       ;
 
 "In case I can't use caps lock
 inoremap kjh <esc>
 
 "For when tab completion gets annoying
-inoremap <C-j> <space><space><space><space>
+"inoremap <C-j> <space><space><space><space>
 
 "Toggle numbering mode
 noremap	 <leader>m :set rnu!<CR>
+
+"Fast write
+noremap <leader>w :w<cr>
 
 "Re-source
 nnoremap <leader>vv :source $MYVIMRC<CR>
@@ -97,6 +101,7 @@ nnoremap gk <C-W>k
 nnoremap <leader>p :vsp<CR>
 nnoremap <leader>b :bn<CR>
 nnoremap <leader>q :q<CR>
+nnoremap <leader>t :ta<space>
 
 "Calculator stuff
 nnoremap <leader>a V:!bc<CR>
@@ -133,14 +138,14 @@ let g:EclimSignLevel=2
 silent! source .abbrev
 
 inoremap <leader>a<leader> <esc>:call <sid>AddAbbrev(expand("<cword>"), 1)<cr>
-inoremap <leader>n<leader> <esc>:call <sid>AddAbbrev(input("Abbreviate what? "), 0)<cr>
+inoremap <leader>n<leader> <esc>:call <sid>AddAbbrev(input("Abbreviate what? "), 1)<cr>
 nnoremap <leader>an :call <sid>AddAbbrev(input("Abbreviate what? "), 0)<cr>
 nnoremap <leader>ao :new .abbrev<cr>
 nnoremap <leader>aa :silent! source .abbrev<cr>
 
 function! <sid>AddAbbrev(result, insertMode)
     let na = input("New abbreviation for ".a:result.": ")
-    call system("echo 'iabbrev ".na." ".a:result."' >> .abbrev")
+    call system("echo 'iabbrev ".shellescape(na)." ".shellescape(a:result)."' >> .abbrev")
     silent source .abbrev
     if a:insertMode
         startinsert!
@@ -154,8 +159,12 @@ augroup filetype_java
     autocmd Filetype java setlocal iskeyword=@,48-57,_,192-255,@-@
     autocmd Filetype java setlocal foldmethod=indent
     autocmd Filetype java setlocal nofoldenable
+    autocmd Filetype java setlocal undofile
+    autocmd Filetype java setlocal undodir=~/.undo
+    autocmd Filetype java setlocal keywordprg=javahelp
+    autocmd Filetype java setlocal makeprg=make
     "Eclim basics
-    autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImport<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ei :JavaImportOrganize<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>es :JavaSearch -p<Space>
     autocmd Filetype java nnoremap <buffer> <localleader>ed :JavaSearchContext<CR>
     autocmd Filetype java nnoremap <buffer> <localleader>er :JavaRename
@@ -168,14 +177,14 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>el :lclose<CR>
     "Eclim code stuff
     "f for fix
-    autocmd Filetype java nnoremap <buffer> <localleader>sf :JavaCorrect<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>sc :JavaConstructor<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>si :JavaImpl<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>sd :JavaDelegate<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>sg :JavaGet<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>ss :JavaSet<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>sb :JavaGetSet<CR>
-    autocmd Filetype java nnoremap <buffer> <localleader>st :JUnit<CR>
+    autocmd Filetype java noremap <buffer> <localleader>of :JavaCorrect<CR>
+    autocmd Filetype java noremap <buffer> <localleader>oc :JavaConstructor<CR>
+    autocmd Filetype java noremap <buffer> <localleader>oi :JavaImpl<CR>
+    autocmd Filetype java noremap <buffer> <localleader>od :JavaDelegate<CR>
+    autocmd Filetype java noremap <buffer> <localleader>og :JavaGet<CR>
+    autocmd Filetype java noremap <buffer> <localleader>os :JavaSet<CR>
+    autocmd Filetype java noremap <buffer> <localleader>ob :JavaGetSet<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>ot :JUnit<CR>
     "p for pretty
     autocmd Filetype java nnoremap <buffer> <localleader>sp :JavaFormat<CR>
 
@@ -184,7 +193,9 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>; A;<ESC>
     autocmd Filetype java nnoremap <buffer> <localleader>cf :call <SID>JavaConstructorField()<CR>
     autocmd Filetype java inoremap <buffer> <c-f> <ESC>:call <SID>JavaConstructorField()<CR>o
-    autocmd Filetype java nnoremap <buffer> <localleader>t :vsp<CR>:execute "tag " . expand("%:t:r") . "Test"<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>t :vsp<CR>:execute "edit " . substitute(expand("%:r") . "Test.java", "src/", "test/", "")<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>tr :call system("ant test -Dfail-on-bad-configuration=false -Divy_initialized=true -Dresolve_run=true -Dtestcase=" . expand("%:t:r") . " >> ~/.results &")<cr>
+    autocmd Filetype java nnoremap <buffer> <localleader>ta :call system("ant test -Dfail-on-bad-configuration=false -Divy_initialized=true -Dresolve_run=true >> ~/.results &")<cr>
     autocmd Filetype java nnoremap <buffer> <localleader>ct :silent !ctags -R src test &<CR><C-L>
 
     "Customizing
@@ -199,6 +210,7 @@ augroup filetype_java
     autocmd Filetype java nnoremap <buffer> <localleader>m ]m
     autocmd Filetype java nnoremap <buffer> <localleader>p [m
     autocmd Filetype java onoremap <buffer> im :<c-u>execute "normal! [mwv]m[Mb"<CR>
+    autocmd Filetype java nnoremap <buffer> <localleader>cm :call <SID>CenterMethod()<CR>
 
     "Shortcuts
     autocmd Filetype java iabbrev <buffer> Sop System.out.println);<left><left>
@@ -239,6 +251,10 @@ augroup filetype_java
     "Eclim insert mode
     autocmd Filetype java inoremap <buffer> <C-SPACE> <C-X><C-U>
     autocmd Filetype java let g:SuperTabDefaultCompletionType = "<c-x><c-u>"
+
+    autocmd BufNewFile *.java :call append(0, "package ".join(split(expand("<afile>:h"),"/")[2:],".").";")<cr>
+    "Find bad constants
+    autocmd BufWritePost *.java :grep -P 'static final (?!Logger).*[a-z][a-zA-Z]* *=' %
 augroup END
 
 " Java Functions {{{1
@@ -263,6 +279,16 @@ function! <SID>JavaWord(forward)
     let s = search('\v[A-Z]|(<.)', opts)
 endfunction
 
+function! <SID>CenterMethod()
+    call search('{')
+    let startline = line('.')
+    normal %
+    let endline = line('.')
+    let middle = startline + float2nr(round((endline - startline)/2))
+    call setpos('.', [0, middle, 1])
+    normal zz
+endfunction
+
 " Filetype Haskell {{{1
 augroup filetype_haskell
     autocmd!
@@ -281,8 +307,8 @@ augroup filetype_markdown
     autocmd BufNew README setlocal tw=72
     autocmd BufNew README setlocal spell
     autocmd BufNew README setlocal makeprg=markdown\ %\ >\ %:r.html
-    autocmd BufNew README nnoremap <buffer> <localleader>sh "zyy"zpVr-
-    autocmd BufNew README nnoremap <buffer> <localleader>h "zyy"zpVr=
+    autocmd BufNew README nnoremap <buffer> <localleader>sh "zyy"zpVr-<c-l>
+    autocmd BufNew README nnoremap <buffer> <localleader>h "zyy"zpVr=<c-l>
     autocmd BufNew README inoremap <buffer> * *<space><space><space>
     autocmd Filetype markdown setlocal tw=72
     autocmd Filetype markdown setlocal spell
@@ -291,6 +317,7 @@ augroup filetype_markdown
     autocmd Filetype markdown nnoremap <buffer> <localleader>h "zyy"zpVr=
     autocmd Filetype markdown nnoremap <buffer> <localleader>t o<!---<space>tags<cr><cr>--><esc>ka+
     autocmd Filetype markdown inoremap <buffer> * *<space><space><space>
+    autocmd Filetype markdown nnoremap <buffer> <localleader>ts V:!date +\%Y-\%m-\%d<cr>
 augroup END
 
 " Filetype Mail {{{1

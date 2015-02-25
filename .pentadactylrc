@@ -1,15 +1,14 @@
 set complete=slfS
-let mapleader = ","
-highlight Hint font-family: monospace; font-size: 14px; font-weight: bold; text-transform: uppercase; color : white; background-color: red; border-color: ButtonShadow; border-width : 0px; border-style: solid; padding: 0px 1px 0px 1px;
-nnoremap 		; 										:
-nnoremap 		: 										;
-nnoremap 		<leader><SPACE> 			:noh<CR>
-nnoremap 		<leader>g 						<C-z>
-nnoremap		gh										<C-p>
-nnoremap		gl										<C-n>
-nnoremap		J										<C-p>
-nnoremap		K										<C-n>
-nnoremap		z1										:zoom!<CR>
-nnoremap		z2										:zoom! 200<CR>
+"highlight Hint font-family: monospace; font-size: 14px; font-weight: bold; text-transform: uppercase; color : white; background-color: red; border-color: ButtonShadow; border-width : 0px; border-style: solid; padding: 0px 1px 0px 1px;
+nmap -b ;            :
+nmap -b :            ;
+nmap -b ,<SPACE>     :noh<CR>
+nmap -b ,g           <C-z>
+nmap -b gh           <C-p>
+nmap -b gl           <C-n>
+nmap -b J            <C-p>
+nmap -b K            <C-n>
+nmap -b z1           :zoom!<CR>
+nmap -b z2           :zoom! 200<CR>
 
 set defsearch=duckduckgo

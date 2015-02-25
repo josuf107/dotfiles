@@ -30,11 +30,17 @@ import qualified Data.Map        as M
 -- certain contrib modules.
 --
 myTerminal :: String
-myTerminal      = "gnome-terminal --hide-menubar"
+myTerminal      = "terminator"
 -- myTerminal      = "urxvt"
 
 terminalRun :: MonadIO m => String -> m ()
 terminalRun c = spawn $ myTerminal ++ " -x " ++ c
+
+terminalIn :: MonadIO m => FilePath -> m ()
+terminalIn f = spawn $ myTerminal ++ " --working-directory=" ++ f
+
+terminalRunIn :: MonadIO m => FilePath -> String -> m ()
+terminalRunIn f c = spawn $ myTerminal ++ "--working-directory=" ++ f ++ " -x " ++ c
 
 -- Width of the window border in pixels.
 --
@@ -44,11 +50,11 @@ myBorderWidth   = 1
 promptConfig :: XPConfig
 promptConfig =
     defaultXPConfig {
-        font = "xft:inconsolata:size=12:antialias=true",
-        bgColor = "#002b36",
-        fgColor = "#839496",
-        bgHLight = "#073642",
-        fgHLight = "#cb4b16",
+        font = "xft:inconsolata:size=14:antialias=true",
+        bgColor = "#000000",
+        fgColor = "#FFFFFF",
+        {-bgHLight = "#073642",-}
+        {-fgHLight = "#cb4b16",-}
         borderColor = "#002b36",
         promptBorderWidth = 0,
         height = 25,
@@ -108,6 +114,8 @@ myWorkspaces    =
 indeedSpaces :: [String]
 indeedSpaces =
     [ "gonzo"
+    , "statservice"
+    , "monitor"
     , "central"
     , "beaker"
     , "scooter"
@@ -124,6 +132,8 @@ indeedSpaces =
     , "eclipse"
     , "hdo"
     , "scratch"
+    , "results"
+    , "tstagg"
     ]
 
 contexts :: [ (String, X ()) ]
@@ -148,10 +158,13 @@ bibleContext = do
     plan <- liftIO $ homeRelative "projects/esv/readingplan.txt"
     terminalRun $ "vim " ++ plan
 
+nothingOpen :: X Bool
+nothingOpen = fmap (null . W.index . windowset) get
+
 xmonadContext :: X ()
 xmonadContext = do
     windows (W.greedyView "xmonad")
-    isEmpty <- fmap (null . W.index . windowset) get
+    isEmpty <- nothingOpen
     if isEmpty
         then do
             xm <- liftIO $ homeRelative ".xmonad/xmonad.hs"
@@ -178,11 +191,7 @@ myFocusedBorderColor = "#268bd2"
 
 dmenuArgs :: String -> [String]
 dmenuArgs p =
-    [ "-nb", "#002b36"
-    , "-nf", "#839496"
-    , "-sb", "#073642"
-    , "-sf", "#cb4b16"
-    , "-fn", "Inconsolata-12"
+    [ "-fn", "Inconsolata-14"
     , "-p", p
     ]
 
@@ -201,7 +210,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
         -- launch a terminal
         [ mapShiftKey xK_Return $ spawn $ XMonad.terminal conf
         , mapShiftKey xK_l
-            $ spawn "gnome-screensaver-command --lock"
+            $ spawn "gnome-sscreensaver-command -l"
         , mapShiftKey xK_m
             $ spawn "bash ~/.us"
             {-$ spawn "setxkbmap us -option && xmodmap ~/.caps_unswap"-}
@@ -250,15 +259,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
         , mapKey xK_period $ sendMessage (IncMasterN (-1))
         -- Control volume
         , mapKey xK_bracketright
-            $ spawn "amixer -q set Master 3+ unmute"
+            $ spawn "pactl -- set-sink-volume 1 +3%"
         , mapKey xK_bracketleft
-            $ spawn "amixer -q set Master 3- unmute"
+            $ spawn "pactl -- set-sink-volume 1 -3%"
         , mapKey xK_backslash $
-            spawn "amixer -q set Master toggle" >>
-            spawn "amixer -q set Headphone toggle" >>
-            spawn "amixer -q set PCM toggle"
+            spawn "pactl set-sink-mute 1 toggle"
         , mapKey xK_s indeed
         , mapShiftKey xK_s shiftIndeed
+        , mapKey xK_r . windows . W.greedyView $ "results"
         -- , mapKey xK_i $ io (getNextTask >>= showTask)
         -- , mapShiftKey xK_i $ io (getPreviousTask >>= showTask)
         -- , mapKey xK_a $ io showTasks
@@ -268,6 +276,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
         , mapKey xK_q $ restart "xmonad" True
         , mapKey xK_0 contextualize
         , mapShiftKey xK_t $ shellPrompt promptConfig
+        , mapShiftKey xK_c chooseAnyWindow
         ]
         ++
 
@@ -281,19 +290,47 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
             ++
 
         --
-        -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-        -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
+        -- mod-{w,e}, Switch to physical/Xinerama screens 1 or 2
+        -- mod-shift-{w,e}, Move client to screen 1 or 2
         --
-        [((m .|. modMask, key), screenWorkspace sc
-                >>= flip whenJust (windows . f))
-            | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-            , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+        [((m .|. modMask, key),
+            screenWorkspace sc >>= flip whenJust (windows . f))
+                | (key, sc) <- zip [xK_w, xK_e] [0..]
+                , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+
+chooseAnyWindow :: X ()
+chooseAnyWindow = do
+    ws <- fmap windowset get
+    windowNames <- mapM (runQuery className) (W.allWindows ws)
+    whichWindow <- fmap (read . takeWhile isDigit . dropWhile (not . isDigit))
+        . getSelection "WINDOW"
+        . zipWith (++) (fmap show [0..])
+        . fmap (' ':)
+        $ windowNames
+    case drop whichWindow (W.allWindows ws) of
+        (w:_) -> windows . W.shiftWin (W.currentTag ws) $ w
+        _ -> return ()
+
+summonApp :: String -> X ()
+summonApp whichClassName = do
+    ws <- fmap windowset get
+    hints <- fmap (zip (W.allWindows ws))
+        . sequence
+        . fmap (runQuery $ className =? whichClassName)
+        . W.allWindows
+        $ ws
+    case filter snd hints of
+        ((w,_):_) -> windows . W.shiftWin (W.currentTag ws) $ w
+        _ -> return ()
 
 shiftIndeed :: X ()
 shiftIndeed = doIndeed W.shift
 
 indeed :: X ()
-indeed = doIndeed W.greedyView
+indeed = do
+    doIndeed W.greedyView
+    isEmpty <- nothingOpen
+    when isEmpty $ terminalIn "/home/jbarratt/Indeed"
 
 doIndeed :: (String -> WindowSet -> WindowSet) -> X ()
 doIndeed f = do
@@ -454,8 +491,8 @@ getRandomBackground = do
 --
 main :: IO ()
 main = do
-    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
-    _ <- spawnPipe "xmobar ~/.xmonad/infobar.hs"
+    xmproc <- spawnPipe "/home/jbarratt/bin/.hsenv/cabal/bin/xmobar ~/.xmonad/xmobar.hs"
+    _ <- spawnPipe "/home/jbarratt/bin/.hsenv/cabal/bin/xmobar ~/.xmonad/infobar.hs"
     xmonad $ defaults {
         logHook = dynamicLogWithPP
             $ xmobarPP  { ppOutput = hPutStrLn xmproc

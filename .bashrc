@@ -6,7 +6,7 @@
 [[ $- != *i* ]] && return
 
 export PS1='[\u@\h \W]\$ '
-export PATH=$PATH:~/bin:~/.cabal/bin:~/cabal-dev/bin
+export PATH=~/bin:~/bin/.cabal-sandbox/bin/:~/.cabal/bin:~/cabal-dev/bin:$PATH
 export EDITOR=vim
 set -o vi
 
