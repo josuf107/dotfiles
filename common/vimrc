@@ -396,3 +396,8 @@ function! <SID>LQuote()
     endif
     execute ':normal a' . q
 endfunction
+
+" Extension {{{1
+if filereadable($DOTFILES_PROFILE."/vimrc")
+    source $DOTFILES_PROFILE/vimrc
+endif

@@ -330,7 +330,8 @@ indeed :: X ()
 indeed = do
     doIndeed W.greedyView
     isEmpty <- nothingOpen
-    when isEmpty $ terminalIn "/home/jbarratt/Indeed"
+    home <- liftIO getHomeDirectory
+    when isEmpty $ terminalIn (home ++ "/Indeed")
 
 doIndeed :: (String -> WindowSet -> WindowSet) -> X ()
 doIndeed f = do
@@ -491,8 +492,9 @@ getRandomBackground = do
 --
 main :: IO ()
 main = do
-    xmproc <- spawnPipe "/home/jbarratt/bin/.hsenv/cabal/bin/xmobar ~/.xmonad/xmobar.hs"
-    _ <- spawnPipe "/home/jbarratt/bin/.hsenv/cabal/bin/xmobar ~/.xmonad/infobar.hs"
+    home <- getHomeDirectory
+    xmproc <- spawnPipe $ home ++ "/bin/.hsenv/cabal/bin/xmobar ~/.xmonad/xmobar.hs"
+    _ <- spawnPipe $ home ++ "/bin/.hsenv/cabal/bin/xmobar ~/.xmonad/infobar.hs"
     xmonad $ defaults {
         logHook = dynamicLogWithPP
             $ xmobarPP  { ppOutput = hPutStrLn xmproc

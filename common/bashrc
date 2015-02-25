@@ -1,0 +1,57 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+export PS1='[\u@\h \W]\$ '
+export PATH=~/bin:~/bin/.cabal-sandbox/bin/:~/.cabal/bin:~/cabal-dev/bin:$PATH
+export EDITOR=vim
+set -o vi
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+shopt -s checkwinsize
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# Common aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias bs='vim ~/.bashrc && . ~/.bashrc'
+alias ba='vim ~/.bash_aliases && . ~/.bashrc'
+alias tvim='vim -u .vimrc'
+alias hs='. .hsenv/bin/activate'
+alias ppjson='python -mjson.tool'
+alias friendly='. $(which friendly.sh)'
+
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+fi
+
+if [ -e $DOTFILES_PROFILE/bashrc ]
+then
+    . $DOTFILES_PROFILE/bashrc
+fi
